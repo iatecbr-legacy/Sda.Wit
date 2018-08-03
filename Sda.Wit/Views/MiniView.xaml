@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="Sda.Wit.Views.MiniView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sda.Wit.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" Height="27" Width="150" MouseEnter="ColorZone_MouseEnter" Background="{DynamicResource PrimaryHueMidBrush}" MouseDown="UserControl_MouseDown">
+    <Grid IsHitTestVisible="True">
+        <Grid x:Name="gridView">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="2"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <materialDesign:ColorZone x:Name="colorZone" IsHitTestVisible="True" Mode="PrimaryMid" VerticalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{Binding ElapsedTime}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                </Grid>
+            </materialDesign:ColorZone>
+
+            <local:WorkProgressBar Grid.Row="1" Grid.ColumnSpan="2"
+                    Estimated="{Binding CurrentWorkItem.Fields.OriginalEstimate}"
+                    Remaining="{Binding CurrentWorkItem.Fields.RemainingWork}"
+                    Completed="{Binding CurrentWorkItem.Fields.CompletedWork}"/>
+        </Grid>
+
+        <local:WorkItemCard Margin="-16 0 -16 0" x:Name="workItemCard" WorkItem="{Binding CurrentWorkItem}" Visibility="Collapsed" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"  MouseLeave="workItemCard_MouseLeave"/>
+
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="Sda.Wit.Views.WorkItemCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sda.Wit.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:s="clr-namespace:Sda.Wit.Views"
+             xmlns:models="clr-namespace:Sda.Wit.Models"
+             xmlns:entities="clr-namespace:Sda.VSTS.RestApi.Entities;assembly=Sda.VSTS.RestApi"
+             mc:Ignorable="d">
+
+    <!--<UserControl.DataContext>
+        --><!--<models:WorkItemCardModel/>--><!--
+        <entities:WorkItem/>
+    </UserControl.DataContext>-->
+    
+    <UserControl.Resources>
+        <!--<s:CurrentIconConverter x:Key="currentIconConverter" />-->
+        <s:StatusConverter x:Key="statusConverter"/>
+        <s:TypeToIconConverter x:Key="typeToIconConverter"/>
+        <s:TypeToColorConverter x:Key="typeToColorConverter"/>
+    </UserControl.Resources>
+    
+    <!--<materialDesign:Card x:Name="Card" Margin="8,0" Background="{models:DynamicResourceBinding Fields.State}">-->
+        <materialDesign:Card x:Name="Card" Margin="8,0" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="16 16 16 8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center" Grid.Column="0">
+                    <!--<materialDesign:PackIcon Kind="CheckboxMarkedOutline" x:Name="TypeIcon" HorizontalAlignment="Center" Width="32" Height="32"   />-->
+                    <TextBlock x:Name="TypeIcon" Text="{Binding Fields.WorkItemType, Converter={StaticResource typeToIconConverter}}" FontFamily="Bowtie" FontSize="32" HorizontalAlignment="Center">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource typeToColorConverter}">
+                                <Binding Path="Fields.WorkItemType"/>
+                                <Binding Path="Fields.State" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                    <TextBlock Text="{Binding Id}" Style="{StaticResource MaterialDesignCaptionTextBlock}" TextElement.FontWeight="Bold" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{Binding Fields.Title}" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="16,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="WrapWithOverflow"/>
+
+                <Button x:Name="btnTaskTimer" Grid.Column="2" Margin="8 0 0 0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" HorizontalAlignment="Right" ToolTip="MaterialDesignFloatingActionAccentButton" VerticalAlignment="Center" Click="btnTaskTimer_Click">
+                    <materialDesign:PackIcon x:Name="Icon" Kind="Play" Height="24" Width="24" />
+                </Button>
+            </Grid>
+
+            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignDarkSeparator}"/>
+
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+
+                <WrapPanel Grid.Column="0" Orientation="Horizontal"  Margin="16 0 0 0">
+
+                    <StackPanel Orientation="Horizontal" Margin="0 8 16 0" ToolTip="Status">
+                        <!--<materialDesign:PackIcon Kind="Brightness1" VerticalAlignment="Center" Margin="0,0,3,0" ToolTip="Status"/>-->
+                        <Ellipse Height="16" Width="16" VerticalAlignment="Center" ToolTip="Status" Margin="0,0,3,0" Fill="{Binding Fields.State, Converter={StaticResource statusConverter}}"/>
+                        <TextBlock Text="{Binding Fields.State, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody1TextBlock}" ToolTip="Status"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 8 16 0" ToolTip="Prioridade">
+                        <materialDesign:PackIcon Kind="AlertCircleOutline" VerticalAlignment="Center" Margin="0,0,3,0"  ToolTip="Prioridade"/>
+                        <TextBlock Text="{Binding Fields.Priority}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody1TextBlock}"  ToolTip="Prioridade"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 8 16 0"  ToolTip="Estimado">
+                        <materialDesign:PackIcon Kind="Clock" VerticalAlignment="Center" Margin="0,0,3,0" ToolTip="Estimado"/>
+                        <TextBlock Text="{Binding Fields.OriginalEstimate}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody1TextBlock}" ToolTip="Estimado"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 8 16 0" ToolTip="Restante">
+                        <materialDesign:PackIcon Kind="ClockEnd" VerticalAlignment="Center" Margin="0,0,3,0" ToolTip="Restante"/>
+                        <TextBlock Text="{Binding Fields.RemainingWork}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody1TextBlock}" ToolTip="Restante"/>
+                    </StackPanel>
+
+                </WrapPanel>
+
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="-8 0 8 0">
+                    <!--<StackPanel Orientation="Horizontal" Margin="0 0 8 0" ToolTip="Restante">
+                        <materialDesign:PackIcon Kind="AppleKeyboardOption" VerticalAlignment="Center" Margin="0,0,3,0" ToolTip="Restante"/>
+                        <TextBlock Text="{Binding Fields.IterationPath}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody1TextBlock}" ToolTip="Restante"/>
+                    </StackPanel>-->
+                    <Button x:Name="btnOpenInBrowser" Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" materialDesign:RippleAssist.IsCentered="True" Click="btnOpenInBrowser_Click">
+                        <materialDesign:PackIcon Kind="Launch" />
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+
+            <local:WorkProgressBar Grid.Row="3" Height="8"
+                Estimated="{Binding Fields.OriginalEstimate}"
+                Remaining="{Binding Fields.RemainingWork}"
+                Completed="{Binding Fields.CompletedWork}"/>
+            
+        </Grid>
+    </materialDesign:Card>
+</UserControl>
